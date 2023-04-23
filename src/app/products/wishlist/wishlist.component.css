@@ -1,0 +1,7 @@
+.card img {
+    object-fit: contain;
+} 
+
+.btn {
+    font-size: 10px;
+}

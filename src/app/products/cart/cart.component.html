@@ -1,0 +1,161 @@
+<!-- empty empty -->
+<div class="empty-cart-div" *ngIf="allCartItems.length == 0">
+  <div><img class="cart-empty-icon d-flex"
+      src="https://cdni.iconscout.com/illustration/premium/thumb/confusing-woman-due-to-empty-cart-4558760-3780056.png"
+      alt=""></div>
+  <div class="paragraph">
+    Why is your empty is empty?Are you broke?Its okay if you are broke,you can buy it later.Hang there.
+    Why is your empty is empty?It seems like you didnt lke our products.just notify as what you are looking for,if its
+    possible we can make it available on next time onwards.
+    Why is your empty is empty?It seems like you didnt like our products.You dont know unless you try it.So just try our
+    product then come to conclusion.
+    I wish uoy a good day and if yu like to browse through our product ,just go to the home page.
+  </div>
+
+  <a class="shopmore btn btn-outline-dark d-flex" routerLink="">Shop more</a>
+</div>
+
+<!-- cart design -->
+
+<div class="row d-flex flex-row align-items-center " *ngIf="allCartItems.length != 0">
+  <div class="col-lg-7">
+    <table class="table" *ngFor="let item of allCartItems ; let i = index">
+      <thead>
+        <tr class="bg-success">
+          <th scope="col">No</th>
+          <th scope="col">Name</th>
+          <th scope="col">Image</th>
+          <th scope="col">Quantity</th>
+          <th scope="col">Price</th>
+          <th scope="col">Action</th>
+
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">{{i+1}}</th>
+          <td>{{item.title}}</td>
+          <td><img class="w-25" [src]="item.image" alt=""></td>
+          <td>
+            <div class="d-flex align-items-center">
+              <!-- to decreament quantity -->
+              <button class="btn fw-bolder" (click)="decreamentCart(item.id)"> - </button>
+              <!-- quantity box -->
+              <input type="number" class="form-control" width="50px" [value]="item.quantity" style="max-width : 4rem"
+                readonly>
+              <!-- to increament quantity -->
+              <button class="btn fw-bolder" (click)="increamentCart(item.id)"> + </button>
+
+            </div>
+          </td>
+          <td>${{item.grandTotal}}</td>
+          <td><i class="fa-solid fa-trash fa-xl text-danger " type="button" (click)="removeItem(item.id)"></i></td>
+        </tr>
+
+      </tbody>
+    </table>
+    <!-- more action div -->
+    <div class="d-flex justify-content-end">
+      <!-- empty cart -->
+      <button class="btn btn-danger" (click)="emptyCart()"> <i class="fa-solid fa-trash fa-shake me-1"></i>Empty
+        Cart</button>
+      <button class="btn btn-success" routerLink=""><i class="fa-solid fa-cart-plus fa-shake me-1"></i>Shope
+        more</button>
+    </div>
+
+  </div>
+  <div class="col-5">
+    <div class="border border-secondary p-5">
+      <p>Price:Rs:{{cartTotalPrice}}</p>
+      <p>Discount:Rs.10</p>
+      <p>Total amount:Rs.{{finalAmount}}</p>
+      <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#staticBackdrop"> Proceed to
+        buy</button>
+    </div>
+  </div>
+</div>
+
+<!-- check out modal design -->
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">CheckOut Details</h1>
+        <button type="button" (click)="closeModal()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <form class="border p-2 rounded" *ngIf="!paymentBtn" [formGroup]="addressForm" (ngSubmit)="submit()">
+          <h6 class="text-primary mb-3">Enter your Delivery Address</h6>
+          <div class="form-floating mb-3">
+            <input name="username" formControlName="username" type="text" class="form-control" id="floatingInput"
+              placeholder="Username" required>
+            <label for="floatingInput">Username</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input name="address1" formControlName="address1" type="text" class="form-control" id="floatingPassword"
+              placeholder="Apartment/Flat No." required>
+            <label for="floatingPassword">Apartment/Flat No.</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input name="address2" formControlName="address2" type="text" class="form-control" id="floatingPassword"
+              placeholder="Street Name" required>
+            <label for="floatingPassword">Street Name</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input name="state" formControlName="state" type="text" class="form-control" id="floatingPassword"
+              placeholder="State" required>
+            <label for="floatingPassword">State</label>
+          </div>
+          <div>
+            <input type="submit" class="btn btn-primary mb-3" value="Proceed to Pay">
+          </div>
+        </form>
+  <!-- delivery address -->
+         <div *ngIf="paymentBtn" mt-3 style="line-height: 1px;">
+          <h5 class="mb-3">Delivery Address</h5>
+          <p>{{user.username.toUpperCase()}}</p>
+          <p>{{user.address1}},</p>
+          <p>{{user.address2}}, {{user.state}}</p>
+        </div>
+
+        <div class="d-flex justify-content-between mt-3">
+          <h4 class="text-danger fw-bolder">Total Amount: $ {{finalAmount}}</h4>
+          <button *ngIf="offerTagStatus" class="btn text-primary" (click)="viewOffers()"><i
+              class="fa-solid fa-tag fa-fade"></i> All Offers</button>
+        </div>
+
+       
+        <!-- offers -->
+        <div class="d-flex flex-column" *ngIf="offerStatus">
+          <div *ngIf="cartTotalPrice<500">
+            <p class="text-success btn" (click)="discount10()"><i class="fa-solid fa-tag"></i> Special Offer 10%
+              discount on purchase</p>
+          </div>
+          <div *ngIf="cartTotalPrice>=500">
+            <p class="text-success btn" (click)="discount50()"><i class="fa-solid fa-tag"></i> 50% Cashback on Purchase
+              above 500</p>
+          </div>
+        </div>
+      </div>
+      <div class="" *ngIf="makePaymentStatus">
+        <ngx-paypal [config]="payPalConfig"></ngx-paypal>
+      </div>
+      <div *ngIf="showSuccess" class="text-center text-success">
+        <h5>Payment completed successfully</h5>
+      </div>
+       <div *ngIf="showCancel" class="text-center text-warning">
+        <h5>Payment Cancelled</h5>
+      </div>
+       <div *ngIf="showError" class="text-center text-danger">
+        <h5>Payment failed</h5>
+      </div>
+      <div class="modal-footer" *ngIf="paymentBtn">
+        <button type="button" *ngIf="!makePaymentStatus" (click)="makePayment()" class="btn btn-primary">Make Payment</button>
+      </div>
+    </div>
+  </div>
+</div>

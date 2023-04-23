@@ -1,0 +1,19 @@
+.shopmore {
+    width: 100px;
+    background-color: brown;
+    margin: auto;
+    color: aliceblue;
+    border: none;
+    margin-top: 50px;
+}
+
+.cart-empty-icon {
+    width: 50%;
+    margin: auto;
+}
+
+.paragraph {
+    text-align: justify;
+    width: 50%;
+    margin: auto;
+}
